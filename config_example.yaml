@@ -1,0 +1,156 @@
+#################################################################################################
+# Change settings which will be used by the program here when using new                         #
+# or different source files.                                                                    # 
+#################################################################################################
+# datacolumns:          Defines number of columns at the start of the file 
+#                       which are to be kept. 
+# decimalnums:          Number of digits after decimal to be kept after correlations. 
+#                       Keep this number low to reduce memory usage.
+# allowed_nan_perc:     Percentage of allowed NaN in the columns (genotypes) before it is
+#                       removed. If the percentage is higher, the column is removed.
+# maf_threshold:        Minor allele frequency threshold. If the MAF is lower than this value,
+#                       the SNP is removed.
+# splitlength:          Number of markers included in each chunk to optimize memory usage.
+#                       Lower this value if program gets killed because of memory constraints.
+#                       Only splits checkfile marker file, so not the anchor set. If "de_novo"
+#                       setting is used, then only one dimension is "chunked". If you dont want 
+#                       to chunk use a chunksize which is larger than the number of markers in 
+#                       the checkfile.
+# corrmethod:           Can be "fill" or leave. 'fill' fills NaN values
+#                       with dosage 0 and computes LD matrix in chunks so memory 
+#                       usage is reduced. "leave" makes pandas calculate all LD values 
+#                       and has high memory constraints so is not advised. 
+# remove_values:        LD values below this value are removed from the LD matrix (threshold).
+# run_fullpipe:         True or False: if true, calculate everything, else only the called script.
+# de_novo_or_anchor:    'de_novo' or 'anchor': if 'de_novo' is chosen, the checkfile is also used as
+#                       the sourcefile. If 'anchor' is chosen, the sourcefile is used as the anchor.
+# calculate_all_or_different_pos:
+#                       When calculating positions; calculate position for all SNPS 
+#                       or only the SNPS where the best predicted chromosome was different. Saves time.
+#                       Values can only be 'all' or 'different'.
+# sumchrom_calc_method: 'yadav','sum_all', 'sum_all_squared' or 'top10', where yadav only takes the top 2 
+#                       snps to calculate subchromosome, top10 takes the top 10 (or less if a 
+#                       threshold is set and less than 10 SNPs remain), sum_all is a method where 
+#                       all LD values of all SNPs are summed per subchromosome and the subchr with 
+#                       the largest sum is the new predicted subchr. sum_all_squared is the same as
+#                       sum_all but the sum is squared before comparison. sum_all_squared is the
+#                       recommended method.
+# yadav:                True or False: predict chromosomes with yadav method next to other methods for comparison.
+#                       This method is described in Yadav et al. (2021) and is a method where the
+#                       top 2 SNPs are used to calculate the subchromosome.
+##################################################################################
+datacolumns:                    2 # If 2, then the first 3 columns are kept. (0 is also a position (python standard))
+decimalnums:                    3
+allowed_nan_perc:               100 # if you change this value, make sure to recompute the LD matrix
+maf_threshold:                  0.00 # if you change this value, make sure to recompute the LD matrix
+splitlength:                    10000 # nr of markers included in each chunk to optimize memory usage. Lower this value if program gets killed because of memory constraints. Only splits checkfile marker file, so not the anchor set. If "de_novo" setting is used, then only one dimension is "chunked". If "anchor" setting is used, then both dimensions are "chunked". If you dont want to chunk use a chunksize which is larger than the number of markers in the checkfile.
+corrmethod:                     "fill" # "fill" or "leave" # if you change this value, make sure to recompute the LD matrix
+remove_values:                  0.3 # if you change this value, make sure to recompute the LD matrix
+run_fullpipe:                   True
+de_novo_or_anchor:              "anchor" # "de_novo" or "anchor" 
+calculate_all_or_different_pos: "all" # "all" or "different"
+sumchrom_calc_method:           "sum_all_squared" # 'yadav','sum_all' or 'top10', 'sum_all_squared'
+yadav:                          True  ## if you want to run the origional method described in Yadav et al. (2021): ensure that maf_threshold =0.01 and remove_values=0.1
+
+##########################################################################################
+# Set required column names in which values are used.                                    #
+##########################################################################################
+# chr_col_name:             Name of existing chromosome column
+# position_col_name:        Name of existing position column
+# marker_column:            Name of the marker column; ID column
+# remove_columns:           Possibility to remove individuals from analysis.
+# remove_string_in_columns: Posibility to remove columns with specific strings in them.
+#                           For example, if you want to remove a biparental population.
+# NA_val:                   List of strings that are considered as NA values.
+# extra columns:            Columns not included yet need to be kept in file. 
+#                           Failing to include them results in an error or incorrect data.
+# checkfile_chr_col:        Name of existing chromosome column in the checkfile.
+# checkfile_pos_col:        Name of existing position column in the checkfile.
+# checkdata_marker_col:     Name of the marker column in the checkfile.
+# checkfile_extra_cols:     Extra columns that are not included yet need to be kept in file.
+##########################################################################################
+chr_col_name:              "Chrom" 
+position_col_name:         "Position"
+marker_column:             "Marker" 
+remove_columns:            [] # Remove chromosome value / column to predict
+remove_string_in_columns:  [] # String list in which files are to be removed
+NA_val:                    ["-1"]
+extra_columns:             [] # Extra columns that are not included yet need to be kept in file
+
+checkfile_chr_col:         "Chrom"
+checkfile_pos_col:         "Position"
+checkdata_marker_col:      "Marker"
+checkfile_extra_cols:      []
+
+################################################################################################################
+# Variables related to files; where they are and how they are going to be named.
+################################################################################################################
+# run_ID:                     Name of the run, this will be part of the output file names.
+# data_type:                  Can be different (e.g. istr, fana, seq_1A), folder will be created with this name.
+# sourcefile_location:        Input CSV source file with variant data.
+# checkfile_location:         Input CSV check file with variant data.
+# remove_intersect:           Remove intersecting markers from source and check file. False or True.
+#                             False is recommended, because LD values of intersecting markers are automatically removed.
+# statfile_name:              Name and location of the statistics file after calculating subchromosome.
+# statfile_name_with_position:Name and location of the statistics file after calculating subchromosome and positions.
+# corrmat_name:               Name and location of the LD matrix.
+# summaryfile_name:           Name and location of the statistics summary file.
+################################################################################################################
+
+run_ID: "anchor_500K" # name of the run, this will be part of the output file names
+data_type: "2024_seq_all_qual" # can be different folder will be created with this name
+
+sourcefile_location:         "Datafiles/anchor_500K.csv" ### anchor file
+checkfile_location:          "Datafiles/checkfile.csv" #this is only used if de_novo_or_anchor is set to "anchor", otherwise the checkfile is the same as the sourcefile
+remove_intersect:             False
+statfile_name:               "Results/{{ data_type }}_{{ sumchrom_calc_method }}/{{ run_ID }}/Statisticsfile_{{ run_ID }}"
+statfile_name_with_position: "Results/{{ data_type }}_{{ sumchrom_calc_method }}/{{ run_ID }}/Statisticsfile_Positions_{{ run_ID }}"
+corrmat_name:                "Results/{{ data_type }}_{{ sumchrom_calc_method }}/{{ run_ID }}/CorrelationMatrix_{{ run_ID }}"
+summaryfile_name:            "Results/{{ data_type }}_{{ sumchrom_calc_method }}/{{ run_ID }}/Summary_Statistics_{{ run_ID }}"
+
+##################################################################################
+# Does not need to be changed, but can be changed if needed.
+# Set names of to be created columns and set suffix for specific columns 
+##################################################################################
+# pred_chr_col_name:                Given name for predicted chromosome column. 
+# est_pos_col_name:                 Given name for estimated position column.
+# suffix_count_values:              Suffix attached after chromosome count data.
+# secondchoice_statistic_col_name:  Given name for second best choice column.
+#                                   SSLD ratio = (1 - secondbest_SSLD/best_SSLD)
+# datapoints_used_for_yadav_col:    Given name for the column with number of 
+#                                   datapoints used for calculating position.
+# subgenomemax_name:                Name of subgenome best column.
+# subgenomemin_name:                Name of subgenome second best column.
+# cnt_subgenomemax_name:            Count of subgenome 
+#                                   best column (num of datapoints)
+# cnt_subgenomemin_name:            Count of subgenome 
+#                                   second best column (num of datapoints)
+# abs_diff_pos_name:                Name of column with absolute difference
+#                                   between prev known and predicted position. 
+# suffix_confusion_matrix:          String to be appended to identify 
+#                                   confusion matrix columns.
+# avg_abs_diff:                     Name of abs_col avg in statistics
+# tot_abs_diff:                     Name of abs_col tot in statistics
+# avg_yadav_points:                 Name of yadav avg in statistics
+# tot_yadav_points:                 Name of yadav tot in statistics
+# avg_secondbest_choice:            Name of first/secondbest avg in statistics
+# tot_secondbest_choice:            Name of first/secondbest tot in statistics
+##################################################################################
+pred_chr_col_name:               "pred_chr"
+est_pos_col_name:                "Est_Pos"
+suffix_count_values:             "_Count"
+secondchoice_statistic_col_name: "SSLD_ratio"   # = 1 - secondbest/best
+datapoints_used_for_yadav_col:   "#SNPs_for_POS_est"
+subgenomemax_name:               "best_subgenome"
+subgenomemin_name:               "2ndbest_subgenomemin"
+cnt_subgenomemax_name:           "best_cnt_subgenome"
+cnt_subgenomemin_name:           "2ndbest_cnt_subgenome"
+abs_diff_pos_name:               "Abs_Diff_Pos"
+
+suffix_confusion_matrix:         "_assigned_to"
+avg_abs_diff:                    "avg_abs_diff"
+tot_abs_diff:                    "tot_abs_diff"
+avg_yadav_points:                "avg_yadav_points"
+tot_yadav_points:                "tot_yadav_points"
+avg_secondbest_choice:           "avg_secondbest_choice"
+tot_secondbest_choice:           "tot_secondbest_choice"

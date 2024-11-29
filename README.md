@@ -4,7 +4,7 @@ Python code that computes all LD values of a set of variants with itself or anot
 This is particularly useful in allopolyploid organisms that have high sequence similarity among different genomes, and as such sequencing reads can be aligned on the biologically wrong position and eventually result in spurious variant calls. This progam tries to estimate whether this is the case for variants or not.
 
 Please cite the following article when using this tool:
-How to handle high subgenome sequence similarity in allopolyploid Fragaria x ananassa: Linkage Disequilibrium Based Variant Filtering: https://www.researchsquare.com/article/rs-4686718/v1
+How to handle high subgenome sequence similarity in allopolyploid Fragaria x ananassa: Linkage Disequilibrium Based Variant Filtering: https://doi.org/10.1186/s12864-024-10987-8
 
 # Installation
 ```bash
